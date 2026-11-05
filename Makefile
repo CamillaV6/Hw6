@@ -1,2 +1,2 @@
 all:
-	g++ -Wall -g start.cpp -o tree
+	g++ -Wall -g RedBlackTree.cpp treetest.cpp -o tree
