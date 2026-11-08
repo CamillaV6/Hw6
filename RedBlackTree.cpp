@@ -152,7 +152,7 @@ void RedBlackTree::insertfix(RBTNode* node) {
 					cur = cur->parent;
 					rotateLeft(cur);
 				}
-				cur->parent->color = COLOR_BLACK;
+				cur->parent->color = COLOR_BLACK; //left left if the if statement not called
 				cur->parent->parent->color = COLOR_RED;
 				rotateRight(cur->parent->parent);
 				
@@ -214,7 +214,7 @@ int RedBlackTree::min() {
 		
 		return parent->data;
 	}
-	throw invalid_argument("tree is empty");
+	throw runtime_error("tree is empty");
 
 }
 
@@ -231,7 +231,7 @@ int RedBlackTree::max() {
 		
 		return parent->data;
 	}
-	throw invalid_argument("tree is empty");
+	throw runtime_error("tree is empty");
 }
 
 
