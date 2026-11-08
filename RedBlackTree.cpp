@@ -1,5 +1,7 @@
 #include "RedBlackTree.h"
 
+using namespace std;
+
 RedBlackTree::RedBlackTree() { 
 	root = nullptr;
 	numItems = 0;
@@ -26,13 +28,14 @@ void RedBlackTree::Insert(int data) {
 	if (Contains(data)) { //ends if node already exists
 		return;
 	}
-	
+	numItems++;
+
 	RBTNode* node = new RBTNode;
 	node->data = data;
 	node->color = COLOR_RED;
 	node->left = node->right = nullptr;
 
-	RBTNode* cur = this->root;
+	RBTNode* cur = root;
 	RBTNode* parent = nullptr;
 	
 	while (cur != nullptr) {
@@ -49,37 +52,30 @@ void RedBlackTree::Insert(int data) {
 	if (parent != nullptr) { //node isn't root
 		if (node->data < parent->data) { //if node is less than parent
 			parent->left = node;
-			node->color = COLOR_RED;
-			if (parent->color == COLOR_RED) {
-				node->color = COLOR_BLACK;
-			}
 		} 
 		else { //node is greater than parent
 			parent->right = node;
-			if (parent->color == COLOR_RED) {
-				node->color = COLOR_BLACK;
-			}
 		}
 	}
 	else { //node is root
 		root = node;
-		node->color = COLOR_BLACK;
+		root->color = COLOR_BLACK;
+		return;
 	}
 
 	if (parent->parent != nullptr) {
 		insertfix(node);
 	}
-	numItems++;
 }
 
 //referenced for rotations https://www.geeksforgeeks.org/dsa/introduction-to-red-black-tree/
 void RedBlackTree::rotateLeft(RBTNode* x) { //y node right becomes x left, x becomes y left
 	RBTNode* y = x->right;
 	x->right = y->left;
+	y->parent = x->parent;
 
 	if (y->left != nullptr) {
 		y->left->parent = x;
-		y->parent = x->parent;
 	}
 
 	if (x->parent != nullptr) {
@@ -100,10 +96,11 @@ void RedBlackTree::rotateLeft(RBTNode* x) { //y node right becomes x left, x bec
 void RedBlackTree::rotateRight(RBTNode* x) { //y node left becomes x right, x becomes y right
 	RBTNode* y = x->left;
 	x->left = y->right;
+	
+	y->parent = x->parent;
 
 	if (y->right != nullptr) {
 		y->right->parent = x;
-		y->parent = x->parent;
 	}
 	if (x->parent != nullptr) {
 		if (x == x->parent->right) {
@@ -125,9 +122,9 @@ void RedBlackTree::rotateRight(RBTNode* x) { //y node left becomes x right, x be
 void RedBlackTree::insertfix(RBTNode* node) {
 	RBTNode* cur = node;
 	
-	while (cur->parent->parent != nullptr || cur->parent->color == COLOR_RED) {
-		if (node->parent == node->parent->parent->left) { //parent is left child
-			RBTNode* unc = node->parent->parent->right;
+	while (cur->parent != nullptr && cur->parent->parent != nullptr && cur->parent->color == COLOR_RED) {
+		if (cur->parent == cur->parent->parent->left) { //parent is left child
+			RBTNode* unc = cur->parent->parent->right;
 			if(unc != nullptr && unc->color == COLOR_RED) {
 				cur->parent->color = COLOR_BLACK;
 				unc->color = COLOR_BLACK;
@@ -146,7 +143,7 @@ void RedBlackTree::insertfix(RBTNode* node) {
 			}
 		}
 		else { //parent is right child
-			RBTNode* unc = node->parent->parent->right;
+			RBTNode* unc = cur->parent->parent->left;
 			if(unc != nullptr && unc->color == COLOR_RED) {
 				cur->parent->color = COLOR_BLACK;
 				unc->color = COLOR_BLACK;
@@ -171,9 +168,9 @@ void RedBlackTree::insertfix(RBTNode* node) {
 
 bool RedBlackTree::Contains(int num) {
 	
-	RBTNode* cur = this->root;
+	RBTNode* cur = root;
 	
-	while (cur->data != num || cur != nullptr) {
+	while (cur != nullptr && cur->data != num) {
 		if (num < cur->data) {
 			cur = cur->left;
 		}
@@ -189,27 +186,36 @@ bool RedBlackTree::Contains(int num) {
 }
 
 int RedBlackTree::min() {
-	RBTNode* cur = this->root;
-	RBTNode* parent = nullptr;
 	
-	while (cur != nullptr) {
-		parent = cur;
-		cur = cur->left;
+	if (root != nullptr) {
+		RBTNode* cur = this->root;
+		RBTNode* parent = nullptr;
+		
+		while (cur != nullptr) {
+			parent = cur;
+			cur = cur->left;
+		}
+		
+		return parent->data;
 	}
-	
-	return parent->data;
+	throw invalid_argument("tree is empty");
+
 }
 
 int RedBlackTree::max() {
-	RBTNode* cur = this->root;
-	RBTNode* parent = nullptr;
 	
-	while (cur != nullptr) {
-		parent = cur;
-		cur = cur->right;
+	if (root != nullptr) {
+		RBTNode* cur = this->root;
+		RBTNode* parent = nullptr;
+		
+		while (cur != nullptr) {
+			parent = cur;
+			cur = cur->right;
+		}
+		
+		return parent->data;
 	}
-	
-	return parent->data;
+	throw invalid_argument("tree is empty");
 }
 
 
