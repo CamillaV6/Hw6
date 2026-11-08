@@ -49,6 +49,7 @@ class RedBlackTree{
 		void insertfix(RBTNode* node);
 		void rotateRight(RBTNode* x);
 		void rotateLeft(RBTNode* x);
+		RBTNode* copyHelper(const RBTNode* node, RBTNode* parent);
 	
 	
 };

@@ -17,11 +17,27 @@ RedBlackTree::RedBlackTree(int num) {
 	numItems = 1;
 }
 
-RedBlackTree::RedBlackTree(const RedBlackTree& tree) {
-	this->root = tree.root;
-	this->numItems = tree.numItems;
+
+
+RedBlackTree::RedBlackTree(const RedBlackTree& tree) { //copy constructor
+		numItems = tree.numItems;
+		root = copyHelper(tree.root, nullptr);
 }
 
+RBTNode* RedBlackTree::copyHelper(const RBTNode* node, RBTNode* parent) { //uses recursion so each node is copied corerctly
+	if (node == nullptr) {
+		return nullptr;
+	}
+    RBTNode* newNode = new RBTNode;
+    newNode->data = node->data;
+    newNode->color = node->color;
+    newNode->parent = parent;
+
+    newNode->left = copyHelper(node->left, newNode);
+    newNode->right = copyHelper(node->right, newNode);
+
+    return newNode;
+}
 
 void RedBlackTree::Insert(int data) {
 	
